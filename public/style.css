@@ -1,0 +1,38 @@
+:root{
+  --bg:#050807;--panel:#080d0a;--line:#163a26;--green:#42ff8a;
+  --green2:#19c967;--muted:#6d8d78;--text:#c9e8d3;--red:#ff4d6d;
+  font-family:"Courier New",ui-monospace,monospace;
+}
+*{box-sizing:border-box} html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text)}
+body{overflow-x:hidden}
+.noise,.scanlines,#matrix{position:fixed;inset:0;pointer-events:none}
+.noise{opacity:.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.scanlines{background:repeating-linear-gradient(0deg,transparent 0,transparent 3px,rgba(66,255,138,.018) 4px);z-index:2}
+#matrix{opacity:.12;z-index:0}
+.shell{position:relative;z-index:3;width:min(1050px,calc(100% - 30px));margin:auto}
+.topbar{height:72px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;font-size:12px;letter-spacing:1px}
+.brand{font-weight:900;color:#eaffef;font-size:17px}.cursor{color:var(--green);animation:blink 1s steps(2) infinite}.slash{color:var(--green);margin:0 5px}
+.status{color:var(--muted)}.status i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green);margin-right:7px}
+.hero{padding:90px 0 55px}.eyebrow{color:var(--green);font-size:12px;letter-spacing:3px;margin-bottom:20px}
+h1{font-family:Arial,sans-serif;font-size:clamp(42px,8vw,88px);line-height:.92;letter-spacing:-5px;margin:0;color:#effff3}
+h1 span{color:var(--green);text-shadow:0 0 24px rgba(66,255,138,.25)}
+.hero p{color:var(--muted);margin:20px 0 30px;font-size:14px}
+.terminal{display:flex;align-items:center;border:1px solid var(--green2);background:rgba(5,15,9,.92);box-shadow:0 0 0 1px rgba(66,255,138,.08),0 0 35px rgba(25,201,103,.08);padding:7px;min-height:62px}
+.prompt{color:var(--green);padding:0 12px;font-size:14px;white-space:nowrap}
+.terminal input{flex:1;min-width:0;background:transparent;border:0;outline:0;color:#effff3;font:inherit;font-size:15px;padding:13px 8px}
+.terminal input::placeholder{color:#456650}
+.terminal button,.chips button{font:inherit;cursor:pointer}
+.terminal button{border:1px solid var(--green);background:var(--green);color:#041008;font-weight:900;padding:14px 18px}
+.terminal button:hover{box-shadow:0 0 22px rgba(66,255,138,.35)}
+.chips{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}.chips button{background:#07100a;border:1px solid var(--line);color:var(--muted);padding:8px 11px}.chips button:hover{color:var(--green);border-color:var(--green2)}
+.console{border:1px solid var(--line);background:rgba(3,8,5,.92);min-height:260px}
+.console-head{height:40px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;padding:0 14px;color:var(--muted);font-size:11px;letter-spacing:1px}.console-head #status{color:var(--green)}
+.results{padding:8px 18px 20px}.boot{color:#6c9879;line-height:1.9;padding:14px 0}.boot b{color:var(--green)}
+.result{padding:18px 0;border-bottom:1px dashed #153422;animation:rise .3s ease both}.result:last-child{border-bottom:0}
+.result .num{color:#3c6b4d;margin-right:10px}.result h2{display:inline;font-family:Arial,sans-serif;font-size:18px;margin:0}.result h2 a{color:#bdf8ce;text-decoration:none}.result h2 a:hover{color:var(--green);text-shadow:0 0 10px rgba(66,255,138,.3)}
+.result .url{color:#4f9c68;font-size:12px;margin:7px 0;overflow-wrap:anywhere}.result p{color:#75947e;line-height:1.55;font-size:13px;margin:0;max-width:850px}
+.empty{color:#667f6d;padding:35px 0}.error{color:var(--red);padding:30px 0}
+footer{display:flex;justify-content:space-between;gap:15px;color:#45604d;font-size:10px;padding:24px 0 35px;letter-spacing:1px}
+@keyframes blink{50%{opacity:0}}@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(max-width:650px){.topbar{height:60px}.status{font-size:9px}.status #clock{display:none}.hero{padding:65px 0 40px}h1{letter-spacing:-3px}.terminal{display:block;padding:8px}.prompt{display:block;padding:8px 8px 4px}.terminal input{width:100%;padding:13px 8px}.terminal button{width:100%;margin-top:5px}footer{display:block;line-height:2.2}.console-head{font-size:9px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;scroll-behavior:auto!important}}

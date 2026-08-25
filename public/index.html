@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NULL // Private Search</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="noise"></div>
+<div class="scanlines"></div>
+<canvas id="matrix"></canvas>
+
+<main class="shell">
+  <header class="topbar">
+    <div class="brand"><span class="cursor">_</span>NULL<span class="slash">//</span>SEARCH</div>
+    <div class="status"><i></i> PRIVATE MODE <span id="clock"></span></div>
+  </header>
+
+  <section class="hero">
+    <div class="eyebrow">[ SECURE SEARCH TERMINAL ]</div>
+    <h1>FIND <span>WITHOUT</span><br>LEAVING A TRACE.</h1>
+    <p>Encrypted-style interface. No account. No local search history.</p>
+
+    <form id="searchForm" class="terminal">
+      <span class="prompt">root@null:~$</span>
+      <input id="query" autocomplete="off" spellcheck="false" maxlength="300"
+             placeholder="enter search command..." aria-label="Search">
+      <button type="submit">EXECUTE ↵</button>
+    </form>
+
+    <div class="chips">
+      <button type="button" data-q="latest technology">technology</button>
+      <button type="button" data-q="computer networks">networks</button>
+      <button type="button" data-q="programming tutorials">programming</button>
+    </div>
+  </section>
+
+  <section class="console">
+    <div class="console-head">
+      <span>OUTPUT_STREAM</span>
+      <span id="status">READY</span>
+    </div>
+    <div id="results" class="results">
+      <div class="boot">
+        <div>&gt; initializing private search interface...</div>
+        <div>&gt; telemetry ................. <b>DISABLED</b></div>
+        <div>&gt; local history ............. <b>DISABLED</b></div>
+        <div>&gt; ready.</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>NULL SEARCH / MVP</span>
+    <span>NO TRACKING · NO ACCOUNT · NO SEARCH HISTORY</span>
+  </footer>
+</main>
+<script src="/app.js"></script>
+</body>
+</html>
