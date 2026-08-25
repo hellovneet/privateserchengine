@@ -1,15 +1,15 @@
-# NULL // Private Search — Hacker UI
+# NULL // Private Search — Vercel Fixed
 
-This is the redesigned UI for the Private Search MVP.
+## Deploy
+Push the contents of this folder to the GitHub repository and redeploy the Vercel project.
 
-Run:
+The important fix is `api/search.js`. Vercel now has a real serverless `/api/search` endpoint instead of relying on `server.js` to run as a persistent Express server.
+
+## Local
 npm install
-npm start
+npx vercel dev
 
-Open http://localhost:3000
+Then open the local URL shown by Vercel.
 
-The UI is intentionally hacker/terminal-inspired with matrix animation, scanlines,
-command-style search, responsive mobile layout, and animated result rendering.
-
-Note: the current backend still uses DuckDuckGo HTML as the upstream result source.
-It is not yet a fully independent crawler/index.
+## Privacy
+The app does not create an account or intentionally store local search history. The serverless endpoint proxies the query to DuckDuckGo HTML, so this is privacy-focused rather than a completely independent search index.
