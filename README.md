@@ -1,30 +1,46 @@
-# NULL // Private Search — Vercel v4
+# NULL // Private Search v5
 
-## What changed
+## Goal
 
-The previous version was reaching public HTML gateways that were not returning usable
-results. v4 switches the primary search gateway to the SearXNG JSON API and races
-several currently listed public instances. SearXNG officially supports `/search`
-with `format=json`.
+A hacker-style private search frontend backed by SearXNG.
 
-Search flow:
-1. Multiple SearXNG public instances in parallel.
-2. First healthy instance with results wins.
-3. Wikipedia API as a last-resort fallback.
-4. A clear 503 only if every provider fails.
+### Production architecture
 
-The hacker UI is unchanged.
+NULL Search
+  -> Vercel /api/search
+  -> YOUR self-hosted SearXNG instance
+  -> multiple search engines
+  -> web results
 
-## Deploy
+This is the recommended setup. It does not rely on Wikipedia for normal search.
 
-Replace the GitHub repository files with this ZIP, then redeploy the Vercel project.
+## Configure your own SearXNG
 
-Test:
-`/api/search?q=what%20is%20ai`
+Deploy SearXNG on a VPS/server or another service you control.
 
-## Privacy note
+Then in Vercel:
 
-Your UI does not save search history or require an account. However, v4 uses public
-SearXNG instances as upstream gateways. Their operators are outside your control.
-For stronger privacy and reliability, the next production step is to run your own
-SearXNG instance and point this API only to it.
+Project -> Settings -> Environment Variables
+
+Add:
+
+SEARXNG_URL=https://YOUR-SEARXNG-DOMAIN
+
+Redeploy.
+
+The API will use only your configured SearXNG instance when this variable exists.
+
+## Temporary development mode
+
+If SEARXNG_URL is not configured, the API tries a small set of public SearXNG
+instances. Public instances can be rate-limited or unavailable, so this mode is
+not suitable for production.
+
+## Important privacy note
+
+The NULL UI does not save search history or require accounts. Once you connect
+your own SearXNG instance, you control the upstream search gateway. You should
+also configure that SearXNG instance not to retain logs if your privacy goal
+requires that.
+
+Developer: Vineet Sharma.

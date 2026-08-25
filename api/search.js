@@ -1,36 +1,54 @@
-const INSTANCES = [
+/**
+ * NULL Search backend
+ *
+ * Preferred production mode:
+ *   Set SEARXNG_URL in Vercel Environment Variables to your own
+ *   self-hosted SearXNG instance, e.g. https://search.example.com
+ *
+ * The endpoint asks SearXNG for JSON results. If no private instance is
+ * configured, it uses a public instance list as a temporary development mode.
+ */
+
+const PUBLIC_INSTANCES = [
   "https://searx.tiekoetter.com",
   "https://search.rhscz.eu",
-  "https://search.wdpserver.com",
-  "https://metasearx.com"
+  "https://search.wdpserver.com"
 ];
 
-async function queryInstance(base, q) {
+function clean(value) {
+  return String(value ?? "").replace(/<[^>]*>/g, "").trim();
+}
+
+async function searchSearXNG(base, q) {
+  const root = base.replace(/\/+$/, "");
+  const endpoint =
+    `${root}/search?q=${encodeURIComponent(q)}&format=json&language=en&categories=general`;
+
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 7000);
+  const timer = setTimeout(() => controller.abort(), 9000);
 
   try {
-    const url = `${base}/search?q=${encodeURIComponent(q)}&format=json&language=en`;
-    const response = await fetch(url, {
+    const response = await fetch(endpoint, {
       signal: controller.signal,
       redirect: "follow",
       headers: {
-        "User-Agent": "NULLSearch/1.0",
-        "Accept": "application/json"
+        "Accept": "application/json",
+        "User-Agent": "NULLSearch/1.0"
       }
     });
 
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
     const data = await response.json();
 
-    const results = Array.isArray(data.results) ? data.results : [];
-    return results
-      .filter(x => x && x.title && x.url)
+    return (Array.isArray(data.results) ? data.results : [])
+      .filter(x => x && x.url && x.title)
       .slice(0, 20)
       .map(x => ({
-        title: String(x.title).replace(/<[^>]*>/g, ""),
+        title: clean(x.title),
         url: String(x.url),
-        snippet: String(x.content || x.snippet || "").replace(/<[^>]*>/g, "")
+        snippet: clean(x.content || x.snippet || ""),
+        engine: clean(x.engine || "web")
       }));
   } finally {
     clearTimeout(timer);
@@ -43,51 +61,42 @@ export default async function handler(req, res) {
   if (!q) return res.status(400).json({ error: "Enter a search query." });
   if (q.length > 300) return res.status(400).json({ error: "Query is too long." });
 
-  const attempts = INSTANCES.map(async (base) => {
-    const results = await queryInstance(base, q);
-    if (!results.length) throw new Error("No results");
-    return { base, results };
-  });
+  const configured = String(process.env.SEARXNG_URL || "").trim();
+  const instances = configured
+    ? [configured]
+    : PUBLIC_INSTANCES;
 
   try {
-    const winner = await Promise.any(attempts);
+    const attempts = instances.map(async base => ({
+      base,
+      results: await searchSearXNG(base, q)
+    }));
+
+    // Use the first instance that returns actual results.
+    const settled = await Promise.allSettled(attempts);
+    const winner = settled.find(
+      x => x.status === "fulfilled" && x.value.results.length > 0
+    );
+
+    if (!winner) {
+      return res.status(503).json({
+        error: configured
+          ? "Your private SearXNG instance did not return results."
+          : "No SearXNG gateway returned results. Configure SEARXNG_URL in Vercel for reliable production search.",
+        mode: configured ? "private" : "development"
+      });
+    }
 
     res.setHeader("Cache-Control", "no-store, max-age=0");
     return res.status(200).json({
       query: q,
-      results: winner.results,
-      source: "SearXNG"
+      results: winner.value.results,
+      source: configured ? "private-searxng" : "searxng-development"
     });
-  } catch {
-    // Last-resort Wikipedia search. This still gives a real result rather
-    // than returning a dead gateway message.
-    try {
-      const wikiUrl =
-        `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(q)}` +
-        `&format=json&origin=*&srlimit=10`;
-      const response = await fetch(wikiUrl, {
-        headers: { "User-Agent": "NULLSearch/1.0" }
-      });
-      const data = await response.json();
-
-      const results = (data.query?.search || []).map(item => ({
-        title: item.title,
-        url: `https://en.wikipedia.org/wiki/${encodeURIComponent(item.title.replace(/ /g, "_"))}`,
-        snippet: String(item.snippet || "").replace(/<[^>]*>/g, "")
-      }));
-
-      if (results.length) {
-        return res.status(200).json({
-          query: q,
-          results,
-          source: "Wikipedia",
-          warning: "Web gateway unavailable; Wikipedia fallback used."
-        });
-      }
-    } catch {}
-
-    return res.status(503).json({
-      error: "Search providers are temporarily unavailable. Please try again."
+  } catch (error) {
+    return res.status(502).json({
+      error: "Search backend failed.",
+      detail: String(error?.message || "unknown error")
     });
   }
 }

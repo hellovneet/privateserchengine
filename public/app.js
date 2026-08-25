@@ -15,7 +15,9 @@ form.addEventListener("submit",async e=>{
  try{
    const r=await fetch("/api/search?q="+encodeURIComponent(q)),d=await r.json();
    if(!r.ok)throw new Error(d.error||"Search failed");
-   status.textContent=d.warning ? "WIKI_FALLBACK" : `FOUND_${d.results.length}`;
+   status.textContent = d.source === "private-searxng"
+      ? `PRIVATE_${d.results.length}`
+      : `FOUND_${d.results.length}`;
    if(!d.results.length){results.innerHTML='<div class="empty">&gt; no matching nodes found.</div>';return}
    results.innerHTML="";
    if(d.warning){

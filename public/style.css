@@ -12,7 +12,7 @@ body{overflow-x:hidden}
 .shell{position:relative;z-index:3;width:min(1050px,calc(100% - 30px));margin:auto}
 .topbar{height:72px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;font-size:12px;letter-spacing:1px}
 .brand{font-weight:900;color:#eaffef;font-size:17px}.cursor{color:var(--green);animation:blink 1s steps(2) infinite}.slash{color:var(--green);margin:0 5px}
-.status{color:var(--muted)}.status i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green);margin-right:7px}
+.status{color:var(--muted)}.backend{color:var(--green);margin-left:8px}.status i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green);margin-right:7px}
 .hero{padding:90px 0 55px}.eyebrow{color:var(--green);font-size:12px;letter-spacing:3px;margin-bottom:20px}
 h1{font-family:Arial,sans-serif;font-size:clamp(42px,8vw,88px);line-height:.92;letter-spacing:-5px;margin:0;color:#effff3}
 h1 span{color:var(--green);text-shadow:0 0 24px rgba(66,255,138,.25)}
