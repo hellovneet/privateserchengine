@@ -1,15 +1,15 @@
-# NULL // Private Search — Vercel Fixed
+# NULL // Private Search
 
-## Deploy
-Push the contents of this folder to the GitHub repository and redeploy the Vercel project.
+## Vercel deployment
 
-The important fix is `api/search.js`. Vercel now has a real serverless `/api/search` endpoint instead of relying on `server.js` to run as a persistent Express server.
+The search endpoint is a native Vercel serverless function at `/api/search`.
 
-## Local
-npm install
-npx vercel dev
+1. Upload/replace the project files in GitHub.
+2. Redeploy the Vercel project.
+3. Test `/api/search?q=hello%20world`.
+4. Then test the website search box.
 
-Then open the local URL shown by Vercel.
+The frontend remains the hacker/Matrix design.
 
-## Privacy
-The app does not create an account or intentionally store local search history. The serverless endpoint proxies the query to DuckDuckGo HTML, so this is privacy-focused rather than a completely independent search index.
+### Privacy note
+This MVP does not store search history in the app and does not require accounts. The server proxies queries to an upstream web-search page, so it is privacy-focused rather than a fully independent crawler/index. A future version can use a self-hosted index.
