@@ -1,15 +1,16 @@
-# NULL // Private Search
+# NULL // Private Search — Vercel v3
 
-## Vercel deployment
+This version keeps the hacker UI and fixes the search gateway strategy.
 
-The search endpoint is a native Vercel serverless function at `/api/search`.
+Search order:
+1. Mojeek HTML results (independent search index)
+2. DuckDuckGo Lite fallback
+3. If both gateways fail, the UI returns a working direct Mojeek search link instead of a dead error.
 
-1. Upload/replace the project files in GitHub.
-2. Redeploy the Vercel project.
-3. Test `/api/search?q=hello%20world`.
-4. Then test the website search box.
+Deploy:
+- Replace the files in the GitHub repository with this ZIP's contents.
+- Redeploy the Vercel project.
+- Test `/api/search?q=what%20is%20ai`.
 
-The frontend remains the hacker/Matrix design.
-
-### Privacy note
-This MVP does not store search history in the app and does not require accounts. The server proxies queries to an upstream web-search page, so it is privacy-focused rather than a fully independent crawler/index. A future version can use a self-hosted index.
+Privacy:
+The app itself does not save search history or create accounts. The backend proxies the query to the selected upstream search provider. This is privacy-focused, not a fully independent crawler/index yet.

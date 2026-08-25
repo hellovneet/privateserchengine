@@ -15,9 +15,15 @@ form.addEventListener("submit",async e=>{
  try{
    const r=await fetch("/api/search?q="+encodeURIComponent(q)),d=await r.json();
    if(!r.ok)throw new Error(d.error||"Search failed");
-   status.textContent=`FOUND_${d.results.length}`;
+   status.textContent=d.warning ? "FALLBACK" : `FOUND_${d.results.length}`;
    if(!d.results.length){results.innerHTML='<div class="empty">&gt; no matching nodes found.</div>';return}
    results.innerHTML="";
+   if(d.warning){
+     const note=document.createElement("div");
+     note.className="boot";
+     note.textContent="> gateway fallback: direct search link provided.";
+     results.append(note);
+   }
    d.results.forEach((x,i)=>{
      const el=document.createElement("article");el.className="result";el.style.animationDelay=(i*25)+"ms";
      const h=document.createElement("h2"),a=document.createElement("a");
